@@ -35,17 +35,11 @@ class CategorySerializer(serializers.ModelSerializer):
         model = models.Category
         fields = ['id', 'name', 'image_url']
 
-class ImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Image
-        fields = ['id', 'file', 'label']
-
 
 
 
 class DishSerializer(serializers.ModelSerializer):
-    # Assuming you want to read the images
-    images = ImageSerializer(many=True, read_only=True)  
+    # Assuming you want to read the images 
     image_urls = ImageURLSerializer(many=True, read_only=True)
     
     class Meta:
@@ -63,7 +57,6 @@ class DishSerializer(serializers.ModelSerializer):
             'favourite', 
             'restaurant_details', 
             'get_category', 
-            'images', 
             'category',
             'image_urls',
         ]
@@ -73,7 +66,6 @@ class DishSerializer(serializers.ModelSerializer):
         # Create Dish instance
         
         ingredients = self.context['request'].data.get('ingredients', [])
-        images_data = self.context['request'].data.get('images', [])
         image_urls = self.context['request'].data.get('all_images', [])
 
         
@@ -105,13 +97,7 @@ class DishSerializer(serializers.ModelSerializer):
         except:
             pass
 
-        try:
-            images_data = self.context['request'].data.getlist('images', [])
-            for image_file in images_data:
-                image_instance = models.Image.objects.create(file=image_file)
-                dish.images.add(image_instance)
-        except:
-            pass
+        
 
         try:
             for image_url in image_urls:
@@ -120,20 +106,16 @@ class DishSerializer(serializers.ModelSerializer):
         except:
             pass
 
-
-
         return dish
 
 
 class DishSerializerForRating(serializers.ModelSerializer):
-    images = ImageSerializer(many=True, read_only=True) 
     image_urls = ImageURLSerializer(many=True, read_only=True)
     class Meta:
         model = models.Dish
         fields = [
             'id', 
             'name',
-            "images",
             "image_urls"
         ]
 
@@ -158,7 +140,6 @@ class RestaurantSerializer(serializers.ModelSerializer):
             'name',
             'description',
             'ratings',
-            'image',
             'address',
             "image_url",
             "balance",
@@ -174,7 +155,7 @@ class RestaurantSerializerForRating(serializers.ModelSerializer):
             'name',
             'description',
             'ratings',
-            'image',
+            'image_url',
             'address',
         ]
 
@@ -256,7 +237,6 @@ class DriverSerializer(serializers.ModelSerializer):
     
 # A serializer for ordered dishes
 class OrderedDishSerializer(serializers.ModelSerializer):
-    images = ImageSerializer(many=True, read_only=True)
     image_urls = ImageURLSerializer(many=True, read_only=True)
     class Meta:
         model = models.Dish
@@ -269,8 +249,7 @@ class OrderedDishSerializer(serializers.ModelSerializer):
             'restaurant', 
             'ratings',
             'restaurant_details', 
-            'get_category', 
-            'images', 
+            'get_category',
             'image_urls'
         ]
 

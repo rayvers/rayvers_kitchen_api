@@ -444,8 +444,9 @@ def create_driver(request):
     vehicle_color = data.get("vehicle_color")
     vehicle_description = data.get("vehicle_description")
     vehicle_number = data.get("vehicle_number")
+    vehicle_image_url = data.get("vehicle_image_url")
     available = data.get("available", False)
-
+    
 
     # Create driver user
     # Check if user already exists
@@ -514,25 +515,25 @@ def create_driver(request):
                 return Response({
                     "detail": "only restaurants have permission to add drivers"
                 }, status=status.HTTP_400_BAD_REQUEST)
-
             
             code = generate_4_digit_code()
             data.update({"role": "logistics", "code": code})
             serializer = serializers.UserSerializer(data=data)
             if serializer.is_valid():
                 created_user = serializer.save()
-                if request.user.role == "chef":
-                    # Query for the user restaurant model if user is chef
-                    restaurant = Restaurant.objects.filter(user=request.user).first()
-                    # Get the Driver
-                    driver = Driver.objects.filter(user=created_user).first()
-                    # Assign the driver to the restaurant
-                    driver.restaurant = restaurant
-                    driver.vehicle_color = vehicle_color
-                    driver.vehicle_description = vehicle_description
-                    driver.vehicle_number = vehicle_number
-                    driver.available = available
-                    driver.save()
+                # if request.user.role == "chef":
+                # Query for the user restaurant model if user is chef
+                restaurant = Restaurant.objects.filter(user=request.user).first()
+                # Get the Driver
+                driver = Driver.objects.filter(user=created_user).first()
+                # Assign the driver to the restaurant
+                driver.restaurant = restaurant
+                driver.vehicle_color = vehicle_color
+                driver.vehicle_description = vehicle_description
+                driver.vehicle_number = vehicle_number
+                driver.vehicle_image_url = vehicle_image_url
+                driver.available = available
+                driver.save()
                 # Object / Dictionary to be returned after user has been created
                 user_details = {
                     "message": f"A verification code has been sent to {serializer.data.get('email')}.",
@@ -544,10 +545,6 @@ def create_driver(request):
                 return Response(user_details, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
 
 
 @api_view(['GET'])

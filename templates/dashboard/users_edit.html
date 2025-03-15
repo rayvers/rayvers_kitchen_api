@@ -1,0 +1,258 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% load humanize %}
+
+{% block style %}
+<style>
+    .modal-content {
+        background: #f8f9fa;
+        /* Light gray background */
+        border-radius: 1rem;
+    }
+
+    .modal-header {
+        border-bottom: none;
+        padding: 1.5rem;
+    }
+
+    .modal-body img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .modal-body {
+        color: #495057;
+    }
+
+    .modal-footer {
+        border-top: none;
+    }
+
+    .modal-footer .btn {
+        padding: 0.5rem 2rem;
+        border-radius: 0.5rem;
+        font-weight: bold;
+    }
+
+    .asterisks {
+        color: red;
+    }
+
+    .loading-spinner {
+        display: none;
+    }
+
+    @media screen and (max-width: 800px) {
+        .first__logo img {
+            width: 200px;
+        }
+    }
+</style>
+
+
+
+{% endblock %}
+
+{% block content %}
+<main class="content">
+    <div class="container-fluid p-0">
+        <h1 class="h3 mb-3">USER INFORMATION</h1>
+
+        <form id="createUsersForm" method="POST">
+            {% csrf_token %}
+            <div class="staticFields">
+
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="mb-2">Is user Restaurant, Driver or Customer?</label>
+
+
+                        <select class="form-select form-select mb-3" disabled name="role" id="role">
+                            {% if user_obj.role and user_obj.role == "chef" %}
+                            <option value="chef" selected>Restaurant</option>
+                            <option value="logistics">Driver</option>
+                            <option value="customer">Customer</option>
+                            {% elif user_obj.role and user_obj.role == "logistics" %}
+                            <option value="chef">Restaurant</option>
+                            <option value="logistics" selected>Driver</option>
+                            <option value="customer">Customer</option>
+                            {% elif user_obj.role and user_obj.role == "customer" %}
+                            <option value="chef">Restaurant</option>
+                            <option value="logistics">Driver</option>
+                            <option value="customer" selected>Customer</option>
+                            {% else %}
+                            <option value="" selected>---------------------</option>
+                            <option value="chef">Restaurant</option>
+                            <option value="logistics">Driver</option>
+                            <option value="customer">Customer</option>
+                            {% endif %}
+
+
+                        </select>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2" for="first_name">First Name:</label>
+                        <input type="text" value="{{user_first_name}}" class="form-control" id="first_name"
+                            name="first_name" placeholder="Enter your name" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2" for="last_name">Last Name:</label>
+                        <input type="text" value="{{user_last_name}}" class="form-control" id="last_name"
+                            name="last_name" placeholder="Enter your name" required>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2" for="email">Email:</label>
+                        <input value="{{user_obj.email|lower}}" type="email" class="form-control" id="email"
+                            name="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2" for="name">Profile Image:</label>
+                        <input type="file" class="form-control" id="profile_image" name="profile_image"
+                            placeholder="Enter your Image" required>
+                        <span>Please input a valid image file.</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2" for="name">Date of Birth:</label>
+                        <input type="date" class="form-control"
+                            value="{{ user_obj.profile.date_of_birth|date:'Y-m-d' }}" id="date_of_birth"
+                            name="date_of_birth" placeholder="Enter your Date of Birth">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2" for="text">Phone Number:</label>
+                        <input type="text" value="{{user_obj.profile.phone_number }}" class="form-control"
+                            id="phone_number" name="phone_number" placeholder="Enter your Phone number" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2" for="name">Country:</label>
+                        <input type="text" class="form-control" id="country" name="country"
+                            placeholder="Enter your Country" value="{{user_obj.profile.country}}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2" for="text">State:</label>
+                        <input type="text" value="{{user_obj.profile.state}}" class="form-control" id="state"
+                            name="state" placeholder="Enter your State" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2" for="name">Postal Code:</label>
+                        <input type="text" class="form-control" id="postal_code" name="postal_code"
+                            placeholder="Enter your Postal Code" value="{{user_obj.profile.postal_code}}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="mb-2" for="text">Bio</label>
+                        <input type="text" class="form-control" value="{{user_obj.profile.bio}}" id="bio" name="bio"
+                            placeholder="Enter your bio" required>
+                    </div>
+                </div>
+
+
+
+
+
+                <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+
+
+    </div>
+
+
+
+    <!-- Message Modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalLabel">Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalMessageBody">
+                    <!-- The message from the backend will be injected here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</main>
+{% endblock %}
+
+{% block script %}
+
+<script>
+    const modalMessageBody = document.getElementById("modalMessageBody");
+    const messageModal = document.getElementById('messageModal');
+
+    function setLoadingState(button, isLoading) {
+        if (isLoading) {
+            // Disable the button and show spinner
+            button.disabled = true;
+            button.innerHTML += `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+        } else {
+            // Enable the button and remove spinner
+            button.disabled = false;
+            const spinner = button.querySelector('.spinner-border');
+            if (spinner) {
+                spinner.remove();
+            }
+        }
+    }
+
+
+
+    const createUsersForm = document.getElementById("createUsersForm");
+    createUsersForm.onsubmit = function (e) {
+        e.preventDefault();
+        const submitButton = e.target.querySelector('button[type="submit"]');
+        setLoadingState(submitButton, true);
+
+        const formData = new FormData(this);
+
+
+        fetch("{% url 'dashboard:user_update_api' user_obj.pk %}", {
+            method: "POST",
+            body: formData,
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                if (data.success) {
+                    modalMessageBody.textContent = data.message;
+                    modalMessageBody.classList.remove('text-danger');
+                    modalMessageBody.classList.add('text-success');
+                    // Show the modal
+                    new bootstrap.Modal(messageModal).show();
+                } else {
+                    modalMessageBody.textContent = data.message;
+                    modalMessageBody.classList.remove('text-success');
+                    modalMessageBody.classList.add('text-danger');
+                    // Show the modal
+                    new bootstrap.Modal(messageModal).show();
+                }
+            }).finally(() => {
+                setLoadingState(submitButton, false);
+            })
+
+
+
+
+    }
+</script>
+{% endblock %}

@@ -477,7 +477,7 @@ class RestaurantViewDetails(APIView):
             restaurant_details = {
                 "id": serializer.data.get("id"),
                 "name": serializer.data.get("name"),
-                "image": serializer.data.get("image"),
+                "image": serializer.data.get("image_url"),
                 "description": serializer.data.get("description"),
                 "name": serializer.data.get("name"),
                 "ratings": serializer.data.get("ratings"),

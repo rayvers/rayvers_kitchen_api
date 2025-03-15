@@ -15,6 +15,11 @@ import os
 import dj_database_url
 from decouple import config
 
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,6 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'django.contrib.humanize',
 
     # Third Parties Apps
     'cloudinary_storage',
@@ -54,6 +60,7 @@ INSTALLED_APPS = [
     # User Defined Apps
     "app",
     "authentication",
+    "dashboard",
 ]
 
 CLOUDINARY_STORAGE = {
@@ -61,6 +68,12 @@ CLOUDINARY_STORAGE = {
     'API_KEY': config('CLOUDINARY_API_KEY'),
     'API_SECRET': config('CLOUDINARY_API_SECRET')
 }
+
+cloudinary.config(
+    cloud_name=config('CLOUDINARY_CLOUD_NAME'),
+    api_key=config('CLOUDINARY_API_KEY'),
+    api_secret=config('CLOUDINARY_API_SECRET')
+)
 
 
 CORS_ALLOWED_ORIGINS = [
@@ -124,6 +137,11 @@ DATABASES = {
 #     )
 # }
 
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'dashboard_home'
+LOGOUT_REDIRECT_URL = 'login'
+
 
 # Solve foreign key constraints..
 
@@ -174,9 +192,12 @@ STATIC_URL = "static/"
 
 STATIC_URL = "/static/"
 
-STATICFILE_DIRS = [
+
+STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+
 
 
 STATIC_URL = "/static/"

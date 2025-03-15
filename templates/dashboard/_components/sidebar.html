@@ -1,0 +1,77 @@
+{% load static %}
+<nav id="sidebar" class="sidebar js-sidebar bg-primary">
+    <div class="sidebar-content js-simplebar bg-bank-primary pb-5">
+        <a class="sidebar-brand" href="{% url 'dashboard:dashboard_home' %}">
+            <!-- <img width="35" class="fcb-image__image"
+                src="https://res.cloudinary.com/daf9tr3lf/image/upload/v1736086632/2_gkrvjy.png"
+                alt="Rayvers Kitchen Logo" data-trackable="true" data-asset-id="dc55e3cd-91af-480a-b6da-ccc2cb83406d"
+                loading="lazy" tabindex="0"> -->
+            <span class="align-middle">Rayvers Kitchen</span>
+        </a>
+
+        <ul class="sidebar-nav">
+            <li class="sidebar-header">
+                Main Menu
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'dashboard:dashboard_home' %}">
+                    <i class="align-middle" data-feather="home"></i>
+                    <span class="align-middle">Dashboard</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'dashboard:users_list' %}">
+                    <i class="align-middle" data-feather="dollar-sign"></i>
+                    <span class="align-middle">Users</span>
+                </a>
+            </li>
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'dashboard:restaurants_list' %}">
+                    <i class="align-middle" data-feather="dollar-sign"></i>
+                    <span class="align-middle">Restaurants</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'dashboard:drivers_list' %}">
+                    <i class="align-middle" data-feather="repeat"></i>
+                    <span class="align-middle">Drivers</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'dashboard:orders_list' %}">
+                    <i class="align-middle" data-feather="send"></i>
+                    <span class="align-middle">Orders</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'dashboard:customers_list' %}">
+                    <i class="align-middle" data-feather="briefcase"></i>
+                    <span class="align-middle">Customers</span>
+                </a>
+            </li>
+
+            <li class="sidebar-header">
+                Settings
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'dashboard:profile' %}">
+                    <i class="align-middle" data-feather="user"></i>
+                    <span class="align-middle">Profile</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item bg-bank-primary">
+                <a class="sidebar-link bg-bank-primary" href="{% url 'dashboard:logout' %}">
+                    <i class="align-middle" data-feather="log-out"></i>
+                    <span class="align-middle">Sign Out</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

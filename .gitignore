@@ -2,7 +2,9 @@
 venv
 .env
 .env.loc
-
+rayvers_kitchen_git_token.txt
+**/rayvers_kitchen_git_token.txt
+**/**/rayvers_kitchen_git_token.txt
 venv
 .env
 

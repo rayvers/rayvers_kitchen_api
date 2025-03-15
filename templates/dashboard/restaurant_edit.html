@@ -1,0 +1,228 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% load humanize %}
+
+{% block style %}
+<style>
+    .modal-content {
+        background: #f8f9fa;
+        /* Light gray background */
+        border-radius: 1rem;
+    }
+
+    .modal-header {
+        border-bottom: none;
+        padding: 1.5rem;
+    }
+
+    .modal-body img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .modal-body {
+        color: #495057;
+    }
+
+    .modal-footer {
+        border-top: none;
+    }
+
+    .modal-footer .btn {
+        padding: 0.5rem 2rem;
+        border-radius: 0.5rem;
+        font-weight: bold;
+    }
+
+    .asterisks {
+        color: red;
+    }
+
+    .loading-spinner {
+        display: none;
+    }
+
+    @media screen and (max-width: 800px) {
+        .first__logo img {
+            width: 200px;
+        }
+    }
+</style>
+
+
+
+{% endblock %}
+
+{% block content %}
+<main class="content">
+    <div class="container-fluid p-0">
+        <h1 class="h3 mb-3">EDIT {{restaurant.name|upper}}</h1>
+
+        <form id="editRestaurantForm" method="POST">
+            {% csrf_token %}
+            <div class="staticFields">
+                <div class="row">
+
+                    <div class="col-12 mb-3">
+                        <label for="name" class="form-label">Name <span class="asterisks">*</span></label>
+                        <input type="text" value="{{restaurant.name}}" class="form-control" id="name" name="name"
+                            required>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 mb-3">
+                        <label for="phone_number" class="form-label">Phone <span class="asterisks">*</span></label>
+                        <input type="text" value="{{restaurant.user.profile.phone_number}}" class="form-control"
+                            id="phone_number" name="phone_number" required>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <label for="postal_code" class="form-label">Postal Code <span class="asterisks">*</span></label>
+                        <input type="text" value="{{restaurant.user.profile.postal_code}}" class="form-control"
+                            id="postal_code" name="postal_code" required>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 mb-3">
+                        <label for="state" class="form-label">State <span class="asterisks">*</span></label>
+                        <input type="text" value="{{restaurant.user.profile.state}}" class="form-control" id="state"
+                            name="state" required>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <label for="country" class="form-label">Country <span class="asterisks">*</span></label>
+                        <input type="text" value="{{restaurant.user.profile.country}}" class="form-control" id="country"
+                            name="country" required>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 mb-3">
+                        <label for="description" class="form-label">Description <span class="asterisks">*</span></label>
+                        <input type="text" value="{{restaurant.description}}" class="form-control" id="description"
+                            name="description" required>
+                    </div>
+                    <div class="col-sm-6 mb-3 ">
+                        <label for="restaurant_image" class="form-label">Restaurant Image <span
+                                class="asterisks">*</span></label>
+                        <input type="file" id="restaurant_image" name="restaurant_image" class="form-control">
+                        <p style="font-size: 12px; margin-top: 5px;">
+                            Please upload a valid image of your restaurant.
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="row">
+
+                    <div class="row">
+                        <div class="mb-3 col-12">
+                            <label for="restaurant_address" class="form-label">Restaurant Address<span
+                                    class="asterisks">*</span></label>
+
+
+                            <textarea id="restaurant_address" name="restaurant_address" class="form-control"
+                                required>{{restaurant.address}}</textarea>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+
+
+    </div>
+
+
+
+    <!-- Message Modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalLabel">Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalMessageBody">
+                    <!-- The message from the backend will be injected here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</main>
+{% endblock %}
+
+{% block script %}
+
+<script>
+    const modalMessageBody = document.getElementById("modalMessageBody");
+    const messageModal = document.getElementById('messageModal');
+
+    function setLoadingState(button, isLoading) {
+        if (isLoading) {
+            // Disable the button and show spinner
+            button.disabled = true;
+            button.innerHTML += `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+        } else {
+            // Enable the button and remove spinner
+            button.disabled = false;
+            const spinner = button.querySelector('.spinner-border');
+            if (spinner) {
+                spinner.remove();
+            }
+        }
+    }
+
+
+
+    const editRestaurantForm = document.getElementById("editRestaurantForm");
+    editRestaurantForm.onsubmit = function (e) {
+        e.preventDefault();
+        const submitButton = e.target.querySelector('button[type="submit"]');
+        setLoadingState(submitButton, true);
+
+        const formData = new FormData(this);
+
+        // localStorage.setItem('RestaurantEditDetails', JSON.stringify(Object.fromEntries(formData)));
+
+        fetch("{% url 'dashboard:restaurant_edit_api' restaurant.pk %}", {
+            method: "POST",
+            body: formData,
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                if (data.success) {
+                    modalMessageBody.textContent = data.message;
+                    modalMessageBody.classList.remove('text-danger');
+                    modalMessageBody.classList.add('text-success');
+                    // Show the modal
+                    new bootstrap.Modal(messageModal).show();
+                } else {
+                    modalMessageBody.textContent = data.message;
+                    modalMessageBody.classList.remove('text-success');
+                    modalMessageBody.classList.add('text-danger');
+                    // Show the modal
+                    new bootstrap.Modal(messageModal).show();
+                }
+            }).finally(() => {
+                setLoadingState(submitButton, false);
+            })
+
+        setTimeout(() => {
+
+        }, 4000)
+
+
+    }
+</script>
+{% endblock %}

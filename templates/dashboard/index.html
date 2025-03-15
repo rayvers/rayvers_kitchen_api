@@ -1,0 +1,145 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% load humanize %}
+{% block style %}
+
+<link rel="stylesheet" href="{% static 'css/card.css' %}">
+
+<style>
+    .no-wrap {
+        white-space: nowrap;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<main class="content mt-0">
+    <h1 class="h2 mb-3"><strong>Dashboard</strong> </h1>
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <h1 style="text-transform: capitalize;" class="h3 mb-0"> <b>Welcome, <span
+                    style="text-transform: capitalize;">{{username}}.</span></b> </h1>
+        {% if user.profile.get_image_url %}
+        <a href="" class="d-inline-block">
+            <img src="{{user.profile.get_image_url}}"
+                style="border-radius: 50%; object-fit: cover; border: 2px solid #222296;" class="avatar me-1"
+                alt="{{user.profile.name}}" />
+        </a>
+        {% endif %}
+
+    </div>
+    <div class="container-fluid p-0">
+        <p>Here's a summary of your activities and earnings.</p>
+
+        <div class="row">
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col mt-0">
+                                <h5 class="card-title">NUMBER OF ORDERS</h5>
+                            </div>
+                            <div class="col-auto">
+                                <div class="stat text-primary">
+                                    <i class="align-middle" data-feather="dollar-sign"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <h1 class="mt-1 mb-3 text-md" style="font-size: 19px !important;">
+                            {{order_count}}
+                        </h1>
+
+                        <a href="" style="text-decoration: underline; font-size: 13px;" class="btn btn-link p-0">
+                            View Orders
+                        </a>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col mt-0">
+                                <h5 class="card-title">NUMBER OF CUSTOMERS</h5>
+                            </div>
+                            <div class="col-auto">
+                                <div class="stat text-primary">
+                                    <i class="align-middle" data-feather="dollar-sign"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <h1 class="mt-1 mb-3 text-md" style="font-size: 19px !important;">
+                            {{customer_count}}
+                        </h1>
+
+                        <a href="" style="text-decoration: underline; font-size: 13px;" class="btn btn-link p-0">
+                            View Customers
+                        </a>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col mt-0">
+                                <h5 class="card-title">NUMBER OF RESTAURANTS</h5>
+                            </div>
+                            <div class="col-auto">
+                                <div class="stat text-primary">
+                                    <i class="align-middle" data-feather="dollar-sign"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <h1 class="mt-1 mb-3 text-md" style="font-size: 19px !important;">
+                            {{restaurant_count}}
+                        </h1>
+
+                        <a href="" style="text-decoration: underline; font-size: 13px;" class="btn btn-link p-0">
+                            View Restaurants
+                        </a>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col mt-0">
+                                <h5 class="card-title">NUMBER OF DRIVERS</h5>
+                            </div>
+                            <div class="col-auto">
+                                <div class="stat text-primary">
+                                    <i class="align-middle" data-feather="dollar-sign"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <h1 class="mt-1 mb-3 text-md" style="font-size: 19px !important;">
+                            {{driver_count}}
+                        </h1>
+
+                        <a href="" style="text-decoration: underline; font-size: 13px;" class="btn btn-link p-0">
+                            View Drivers
+                        </a>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+{% endblock %}

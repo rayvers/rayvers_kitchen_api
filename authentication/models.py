@@ -64,6 +64,9 @@ class UserProfile(models.Model):
     image_url = models.CharField(max_length=1000, blank=True, null=False)
     phone_number = models.CharField(max_length=30, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
+    country = models.CharField(max_length=200, blank=True, null=True)
+    state = models.CharField(max_length=200, blank=True, null=True)
+    postal_code = models.CharField(max_length=200, blank=True, null=True)
 
     
     @property
@@ -74,8 +77,10 @@ class UserProfile(models.Model):
             # Change this later when we host images on cloudinary
             return 'https://res.cloudinary.com/daf9tr3lf/image/upload/v1737424631/undraw_profile_male_oovdba_achwuh.png'
 
+
+    
     def __str__(self):
-        return f"{self.user.email}'s profile"
+        return f"{self.user.email}'s profile --- {self.user.role}"
 
 
 # User Address

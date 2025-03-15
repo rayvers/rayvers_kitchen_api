@@ -11,7 +11,6 @@ from .models import (
     CartItem,
     Payment,
     PersonalMessage,
-    Image,
     Ingredient,
     DishRating,
     RestaurantRating,
@@ -24,11 +23,10 @@ from .models import (
 
 # Register your models here.
 admin.site.register(Restaurant)
-# admin.site.register(ImageURL)
+admin.site.register(ImageURL)
 admin.site.register(Category)
 admin.site.register(Dish)
 admin.site.register(Ingredient)
-admin.site.register(Image)
 admin.site.register(Order)
 admin.site.register(OrderItem)
 admin.site.register(Driver)

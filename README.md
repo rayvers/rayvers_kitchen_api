@@ -63,7 +63,13 @@ Generate a magic token to access our wonderland. Send your email and password to
 {
   "user_id": 99,
   "email": "new.hero@example.com",
-  "token": "your-magical-token"
+  "token": "your-magical-token",
+  "permissions": {
+    "is_superuser": false,
+    "is_driver": false,
+    "is_restaurant": false,
+    "is_customer": true
+  }
 }
 
 
@@ -109,14 +115,19 @@ Retrieve your superhero profile details. Only for the chosen ones with a valid t
 
 ## PUT /auth/users/me/
 Update your superhero profile. Because even superheroes need a makeover!
-
+The format of data to send shoulf be form data
 Request:
 
 ```json
 {
-  "name": "New Hero Name",
+  "name": "Peter Esezobor",
   "date_of_birth": "1995-05-05",
-  "bio": "A mysterious hero with a touch of humor."
+  "image_url": "https://this.com/image.png",
+  "phone_number": "+2348167930378",
+  "bio": "I am a peace loving person.",
+  "postal_code": "300039",
+  "state": "Edo",
+  "country": "Nigeria",
 }
 ```
 ### Response:
@@ -124,14 +135,13 @@ Request:
 ```json
 
 {
-  "email": "your.email@example.com",
-  "name": "New Hero Name",
-  "date_of_birth": "1995-05-05",
-  "is_superuser": true,
-  "is_staff": false,
-  "is_active": true,
-  "profile_picture": "https://your.avatar.com",
-  "bio": "A mysterious hero with a touch of humor."
+    "id": 2,
+    "name": "Peter",
+    "date_of_birth": "1995-05-05",
+    "image_url": "https://this.com/image.jpg",
+    "phone_number": "+2348167930378",
+    "bio": "I am a peace loving person.",
+    "user": 2
 }
 ```
 
@@ -314,6 +324,7 @@ If the authenticated user is not a restaurant or admin, `invalid token` response
     "vehicle_color": "red",
     "vehicle_description": "This is the vehicle description",
     "vehicle_number": "HGF203JS",
+    "vehicle_image_url":"https://cloudstorage.image.jpg",
     "available": true
   }
 ```
@@ -967,13 +978,6 @@ The client should expect a response like when making a GET request:
                 "name": "english meals",
                 "image": "https://res.cloudinary.com/dqevhwn0e/image/upload/v1/media/category/Screen_Shot_2024-01-24_at_3.14.41_PM.png"
             },
-            "images": [
-                {
-                    "id": 3,
-                    "file": "https://res.cloudinary.com/dqevhwn0e/image/upload/v1/media/category/Screen_Shot_2024-01-24_at_3.14.41_PM.png",
-                    "label": ""
-                }
-            ],
             "image_urls": [
                 {
                     "id": 4,
@@ -1009,18 +1013,7 @@ The client should expect a response like when making a GET request:
                 "name": "english meals",
                 "image": "https://res.cloudinary.com/dqevhwn0e/image/upload/v1/media/category/Screen_Shot_2024-01-24_at_3.14.41_PM.png"
             },
-            "images": [
-                {
-                    "id": 1,
-                    "file": "https://res.cloudinary.com/dqevhwn0e/image/upload/v1/media/category/Screen_Shot_2024-01-24_at_3.14.41_PM.png",
-                    "label": "image 1"
-                },
-                {
-                    "id": 2,
-                    "file": "https://res.cloudinary.com/dqevhwn0e/image/upload/v1/media/category/Screen_Shot_2024-01-24_at_3.14.41_PM.png",
-                    "label": "Image 2"
-                }
-            ],
+            
             "image_urls": [
                 {
                     "id": 4,
@@ -1054,18 +1047,6 @@ The client should expect a response like when making a GET request:
                 "name": "english meals",
                 "image": "https://res.cloudinary.com/dqevhwn0e/image/upload/v1/media/category/Screen_Shot_2024-01-24_at_3.14.41_PM.png"
             },
-            "images": [
-                {
-                    "id": 1,
-                    "file": "https://res.cloudinary.com/dqevhwn0e/image/upload/v1/media/category/Screen_Shot_2024-01-24_at_3.14.41_PM.png",
-                    "label": "image 1"
-                },
-                {
-                    "id": 2,
-                    "file": "https://res.cloudinary.com/dqevhwn0e/image/upload/v1/media/category/Screen_Shot_2024-01-24_at_3.14.41_PM.png",
-                    "label": "Image 2"
-                }
-            ],
             "image_urls": [
                 {
                     "id": 4,
@@ -1079,7 +1060,7 @@ The client should expect a response like when making a GET request:
                     "id": 6,
                     "url": "https://f.com/fgh.png"
                 }
-            ]
+            ],
             "category": 1
         }
     ]
@@ -1099,7 +1080,6 @@ For a POST request, you can decide to use a formData to send your request with t
   "category":2,
   "delivery_options":"paid",
   "time_duration":20,
-  "images": "[ListOfImages base64]",
   "ingredients":[1,2,3,4],
   "all_images": [
     "https://f.com/fgh.png",
@@ -1160,16 +1140,6 @@ The expected response gotten will be as follows:
         {
             "id": 6,
             "url": "https://f.com/fgh.png"
-        }
-    ],
-
-
-
-    "images": [
-        {
-            "id": 3,
-            "file": "https://res.cloudinary.com/dqevhwn0e/image/upload/v1/media/category/Screen_Shot_2024-01-24_at_3.14.41_PM.png",
-            "label": ""
         }
     ],
     "category": 1

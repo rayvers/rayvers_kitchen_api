@@ -98,7 +98,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('email', 'username', 'is_superuser')
     list_filter = ('is_verified',)
     fieldsets = (
-        (None, {'fields': ('email', 'password',)}),
+        (None, {'fields': ('email', 'password', 'role')}),
         ('Personal info', {'fields': ('username', 'current_location_latitude', 'current_location_longitude')}),
         ('Permissions', {'fields': ('is_active', 'is_verified', 'is_superuser',)}),
     )

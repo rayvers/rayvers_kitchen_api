@@ -29,12 +29,14 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = "Categories"
+        verbose_name = "Category"
 
 class Restaurant(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     kitchen_id = models.CharField(_("Kitchen id"), max_length=20, blank=True, null=False)
     image_url = models.CharField(max_length=2000, blank=True, null=True)
-    image = models.ImageField(verbose_name="restauarant image", upload_to="restaurant/", blank=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
     address = models.TextField(blank=True)
@@ -72,7 +74,7 @@ class Restaurant(models.Model):
             "_ingredients": dish._ingredients,
             "get_category": dish.get_category,
             "favourite": [fav.id for fav in dish.favourite.all()],
-            "get_images": dish.get_images,
+            "get_images": dish.get_all_image_urls_added_from_frontend,
         } for dish in dishes]
         return all_dishes
     
@@ -127,18 +129,6 @@ def create_restaurant(sender, instance=None, created=False, **kwargs):
         restaurant.save()
         # print("A restaurant was created")
 
-
-
-class Image(models.Model):
-    file = models.ImageField(verbose_name="dish image", upload_to="dishes/", blank=False, null=False)
-    label = models.CharField(max_length=255, blank=True, null=False)
-
-    def __str__(self):
-        return self.file.url
-    
-    class Meta:
-        verbose_name_plural = "Images"
-        verbose_name = "Image"
     
 
 class ImageURL(models.Model):
@@ -171,9 +161,8 @@ class Dish(models.Model):
     ]
     image_urls = models.ManyToManyField(ImageURL, related_name="image_urls", blank=True)
     name = models.CharField(max_length=255, unique=True)
-    images = models.ManyToManyField(Image, related_name='dish_images', blank=True)
     description = models.TextField(blank=False, null=False)
-    delivery_options = models.CharField(choices=DELIVERY_OPTIONS, max_length=5, default="free")
+    delivery_options = models.CharField(choices=DELIVERY_OPTIONS, max_length=5, default="paid")
     time_duration = models.IntegerField(verbose_name="Time it takes to deliver.", help_text="In minutes.", default=0, blank=False, null=False)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="dish_category") 
     price = models.IntegerField()
@@ -181,7 +170,6 @@ class Dish(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name="dishes", on_delete=models.CASCADE)
 
     favourite = models.ManyToManyField(User, related_name="favourites", blank=True)
-
 
     @property
     def ratings(self):
@@ -224,7 +212,7 @@ class Dish(models.Model):
         return {
             "id": self.id,
             "name": self.category.name,
-            "image": self.category.image.url
+            "image": self.category.image_url
         }
 
     def __str__(self):
@@ -352,7 +340,6 @@ class Driver(models.Model):
     name = models.CharField(_("Driver Name"), max_length=100, blank=True, null=False)
 
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, blank=True, null=True)
-    vehicle_image = models.ImageField(verbose_name="vehicle image", upload_to="driver/", blank=True, null=True)
     vehicle_image_url = models.CharField(max_length=2000, blank=True, null=True)
     vehicle_color = models.CharField(max_length=40, blank=True, null=True)
     vehicle_description = models.TextField(blank=True, null=False)

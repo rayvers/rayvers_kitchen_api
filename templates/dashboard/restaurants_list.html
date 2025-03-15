@@ -1,0 +1,135 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/card.css' %}">
+<style>
+    .no-wrap {
+        white-space: nowrap;
+    }
+
+    /* Pagination styles */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .pagination button {
+        padding: 5px 10px;
+        margin: 2px;
+        border: 1px solid #007bff;
+        background-color: white;
+        color: #007bff;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .pagination button.active {
+        background-color: #007bff;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="content">
+    <div class="container-fluid p-0">
+
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+
+            <h1 class="h3"><strong>Restaurants</strong></h1>
+
+            <a href="{% url 'dashboard:restaurant_create' %}" class="btn-primary btn">Create Restaurant</a>
+
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="no-wrap"></th>
+                                        <th class="no-wrap">Kitchen ID</th>
+                                        <th class="no-wrap">Name</th>
+                                        <th class="no-wrap">Balance</th>
+                                        <th class="no-wrap"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="restaurant-table">
+                                    {% for restaurant in restaurants %}
+                                    <tr>
+                                        <td class="no-wrap">
+                                            <img width="60" src="{{restaurant.image_url}}" alt="{{restaurant.name}}">
+                                        </td>
+                                        <td class="no-wrap">
+                                            <a href="{% url 'dashboard:restaurant_details' restaurant.pk %}"
+                                                class="btn btn-link btn-sm p-0"
+                                                style="font-size: 15px;">{{restaurant.kitchen_id }}</a>
+                                        </td>
+                                        <td class="no-wrap">
+                                            <span>{{restaurant.name}}</span>
+                                        </td>
+                                        <td class="no-wrap">₦{{restaurant.balance|floatformat:2|intcomma }}</td>
+                                        <td class="no-wrap">
+                                            <a href="{% url 'dashboard:restaurant_details' restaurant.pk %}"
+                                                class="btn btn-primary btn-sm">Details</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="pagination" class="pagination"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const tableBody = document.getElementById("restaurant-table");
+        const rows = Array.from(tableBody.getElementsByTagName("tr"));
+        const rowsPerPage = 10; // Number of rows per page
+        let currentPage = 1;
+
+        function displayPage(page) {
+            tableBody.innerHTML = "";
+            const start = (page - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            rows.slice(start, end).forEach(row => tableBody.appendChild(row));
+
+            updatePaginationButtons();
+        }
+
+        function updatePaginationButtons() {
+            const totalPages = Math.ceil(rows.length / rowsPerPage);
+            const paginationContainer = document.getElementById("pagination");
+            paginationContainer.innerHTML = "";
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement("button");
+                button.innerText = i;
+                button.classList.add("pagination-btn");
+                if (i === currentPage) button.classList.add("active");
+
+                button.addEventListener("click", function () {
+                    currentPage = i;
+                    displayPage(i);
+                });
+
+                paginationContainer.appendChild(button);
+            }
+        }
+
+        displayPage(currentPage);
+    });
+</script>
+{% endblock %}
